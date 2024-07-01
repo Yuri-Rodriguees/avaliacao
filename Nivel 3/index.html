@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação NTL</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: rgb(33, 37, 41);
+            color: white;
+        }
+
+        .form-control {
+            background-color: rgb(33, 37, 41);
+            border: 1px solid rgb(61, 67, 73);
+            color: white;
+        }
+
+        .btn-salvar {
+            background-color: rgb(25, 135, 84);
+            border-color: rgb(25, 135, 84);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Cadastro de Funcionário</h2>
+        <form id="form">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="nome">Nome</label>
+                    <input type="text" class="form-control" id="nome">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="sobrenome">Sobrenome</label>
+                    <input type="text" class="form-control" id="sobrenome">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="idade">Idade</label>
+                    <input type="number" class="form-control" id="idade">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="celular">Celular</label>
+                    <input type="tel" class="form-control" id="celular" placeholder="(XX) XXXXX-XXXX">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="principal">Principal</label>
+                    <select class="form-control" id="principal">
+                        <option value="selecione">Selecione...</option>
+                        <option value="sim">Sim</option>
+                        <option value="nao">Não</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="whatsapp">WhatsApp</label>
+                    <select class="form-control" id="whatsapp">
+                        <option value="selecione">Selecione...</option>
+                        <option value="sim">Sim</option>
+                        <option value="nao">Não</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="joao@exemplo.com">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="corporativo">Corporativo</label>
+                    <select class="form-control" id="corporativo">
+                        <option value="selecione">Selecione...</option>
+                        <option value="sim">Sim</option>
+                        <option value="nao">Não</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-salvar">Salvar</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#celular').mask('(00) 00000-0000');
+            $('#email').mask('A', {
+                translation: {
+                    "A": { pattern: /[\w@\-.+]/, recursive: true }
+                }
+            });
+
+            $('#form').submit(function (event) {
+                event.preventDefault();
+
+                let valid = true;
+                $('input, select').each(function () {
+                    if ($(this).val() === '' || $(this).val() === 'selecione') {
+                        valid = false;
+                        alert('Por favor, preencha o campo ' + $(this).prev('label').text());
+                        return false;
+                    }
+                });
+
+                if (valid) {
+                    const data = {
+                        nome: $('#nome').val(),
+                        sobrenome: $('#sobrenome').val(),
+                        idade: $('#idade').val(),
+                        celular: $('#celular').val(),
+                        principal: $('#principal').val(),
+                        whatsapp: $('#whatsapp').val(),
+                        email: $('#email').val(),
+                        corporativo: $('#corporativo').val()
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "http://localhost:3000/salvar",
+                        data: data,
+                        success: function (response) {
+                            alert('Dados salvos com sucesso!');
+                            $('#form')[0].reset();
+                        },
+                        error: function (error) {
+                            alert('Erro ao salvar os dados. Por favor, tente novamente.');
+                            console.error('Erro:', error);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
